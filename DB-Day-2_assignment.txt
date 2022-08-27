@@ -1,0 +1,74 @@
+						DB-Day2
+USE CASE: BUS TRANSPORT SYSTEM
+TABLES USED: BUS, BUSSTATION, PASSENGER , DRIVER
+
+1.Create Table:-
+	** CREATE TABLE Bus(BusID int,
+			 DriverID int,
+			 StationID int,
+			 Availableseats int,
+			 Startlocation varchar(30),
+			 Destinationlocation varchar(30),
+			 PRIMARY KEY(BusID) );
+	** CREATE TABLE Busstation(StationID int,
+				   Location varchar(30),
+				   BusID int,
+				   PRIMARY KEY(StationID) );
+	** CREATE TABLE Driver(DriverID int,
+				Phnno int,
+				BusID int,
+				PassengerID int,
+				PRIMARY KEY(DriverID) );
+	** CREATE TABLE Passenger(PassengerID int,
+				  Phnno int,
+				  BusID int,
+				  Startlocation varchar(30),
+				  Destinationlocation varchar(30),
+				  Noofseats int,
+				  PRIMARY KEY(PassengerID) );
+2.Adding relations by using FOREIGN KEY Constraints:-
+	**PASSENGER TO DRIVER:-
+		ALTER TABLE Driver add FOREIGN KEY(PassengerID) references Passenger(PassengerID);
+	**BUS TO PASSENGER:-
+		ALTER TABLE Passenger add FOREIGN KEY(BusID) references Bus(BusID);
+	**BUS TO BUSSTATION:-
+		ALTER TABLE Busstation add FOREIGN KEY(BusID) references Bus(BusID);
+
+	** BUS TO DRIVER:-
+		ALTER TABLE Driver add FOREIGN KEY(BusId) references Bus(BusID);
+3.Inserting values into tables:-
+	**BUS TABLE:-
+			insert into bus values(1,1,1,20,'khm','hyd');
+			insert into bus values(2,2,2,10,'warangal','hyd');
+			insert into bus values(3,3,1,4,'vijayawada','hyd');
+	**PASSENGER TABLE:-
+			insert into passenger values(1,999,1,'khm','hyd',2);
+			insert into passenger values(2,989,2,'warangal','hyd',6);
+			insert into passenger values(3,789,1,'suryapet','hyd',1);
+	**DRIVER TABLE:-
+			
+			insert into driver values(1,999,1,1);
+			insert into driver values(2,998,2,3);
+			insert into driver values(3,997,2,2);
+	**BUSSTATION TABLE:-
+			insert into busstation values(1,'hyd',1);
+			insert into busstation values(3,'jeedimetla',2);
+			insert into busstation values(4,'mgbs',1);
+4.Performing join operation:-
+	a)select bus.BusId,passenger.PassengerID,bus.availableseats as busseats , passenger.noofseats as bookedseats from bus inner join passenger on  bus.BusId=passenger.BusID;
+	b)select * from busstation left join bus on bus.busid=busstation.busid;
+	c)select * from passenger right join bus on bus.busid=passenger.busid;
+5.Performing Aggregate functions:-
+	**COUNT:-
+		select count(passenger.busid) from passenger group by passenger.busid;
+	**SUM:-
+		select sum(availableseats) from bus;
+	**AVG:-
+		select avg(availableseats) from bus;
+	**MIN:-
+		select min(noofseats) from passenger;
+	**MAX:-
+		select max(noofseats) from passenger;
+6.SUBQUERIES:-
+	a)select busid from bus where startlocation in(select startlocation from passenger where destinationlocation='hyd');
+	b)select busid,startlocation from bus where startlocation in(select startlocation from passenger where passenger.noofseats<5);
